@@ -2,23 +2,20 @@ import * as yup from 'yup';
 
 import {
   Button,
+  Input,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Input,
   Typography,
-} from '@material-tailwind/react';
+} from '@/components/design-system';
 
 import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../state/auth';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 const schema = yup.object({
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('Email is required'),
+  email: yup.string().email('Invalid email address').required('Email is required'),
   password: yup
     .string()
     .min(4, 'Password must be at least 4 characters long')
@@ -28,7 +25,7 @@ const schema = yup.object({
 type FormValues = yup.InferType<typeof schema>;
 
 export const LoginForm = () => {
-  const [loginMutation, { loading, error: apiError }] = useLoginMutation();
+  const { mutate, isPending, error } = useLoginMutation();
 
   const {
     register,
@@ -43,30 +40,22 @@ export const LoginForm = () => {
   });
 
   const onSubmit = (data: FormValues) => {
-    loginMutation({
-      variables: {
-        email: data.email,
-        password: data.password,
-      },
+    mutate({
+      email: data.email,
+      password: data.password,
     });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate autoComplete="false">
       <Card className="w-96">
-        <CardHeader
-          variant="gradient"
-          color="gray"
-          className="mb-4 grid h-28 place-items-center"
-        >
+        <CardHeader variant="gradient" color="gray" className="mb-4 grid h-28 place-items-center">
           <Typography variant="h3" color="white">
             Login In
           </Typography>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          {apiError?.message && (
-            <p className="text-sm text-red-500 mb-2">{apiError.message}</p>
-          )}
+          {error?.message && <p className="text-sm text-red-500 mb-2">{error.message}</p>}
           <div>
             <Input
               type="email"
@@ -74,13 +63,9 @@ export const LoginForm = () => {
               className="mb-4"
               error={!!errors.email}
               {...register('email')}
-              disabled={loading}
+              disabled={isPending}
             />
-            {errors?.email && (
-              <p className="text-sm text-red-500 mt-2">
-                {errors.email?.message}
-              </p>
-            )}
+            {errors?.email && <p className="text-sm text-red-500 mt-2">{errors.email?.message}</p>}
           </div>
           <div>
             <Input
@@ -89,17 +74,15 @@ export const LoginForm = () => {
               className="mb-4"
               error={!!errors.password}
               {...register('password')}
-              disabled={loading}
+              disabled={isPending}
             />
             {errors?.password && (
-              <p className="text-sm text-red-500 mt-2">
-                {errors.password?.message}
-              </p>
+              <p className="text-sm text-red-500 mt-2">{errors.password?.message}</p>
             )}
           </div>
         </CardBody>
         <CardFooter className="pt-0">
-          <Button variant="gradient" fullWidth type="submit" loading={loading}>
+          <Button variant="gradient" fullWidth type="submit" loading={isPending}>
             Login In
           </Button>
         </CardFooter>

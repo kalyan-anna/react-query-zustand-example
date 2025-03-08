@@ -1,37 +1,23 @@
-import { useAuthState } from './atoms';
-
-import { useMutation } from '@apollo/client';
-import { gql } from '@generated/gql';
-import { useNavigate } from 'react-router';
-import { useUIPreferenceState } from '../ui-preference';
-
-const LOGIN_MUTATION = gql(`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      accessToken
-      user {
-        ...UserFragment
-      }
-    }
-  }
-`);
+import { useMutation } from '@tanstack/react-query';
+import { authApi } from '@/state/auth/api';
+import { LoginRequest } from './types';
+import { useAuthStore } from './store';
+import { useRouter } from 'next/navigation';
+import { useUIPreferenceStore } from '../ui-preference';
 
 export const useLoginMutation = () => {
-  const navigate = useNavigate();
-  const { login, logout } = useAuthState();
-  const { lastVisitedProjectId } = useUIPreferenceState();
+  const router = useRouter();
+  const { loginSuccess, clearAuth } = useAuthStore.use.actions();
+  const lastVisitedProjectId = useUIPreferenceStore.use.lastVisitedProjectId();
 
-  return useMutation(LOGIN_MUTATION, {
-    onCompleted: (data) => {
-      login({ accessToken: data.login.accessToken, user: data.login.user });
-      if (lastVisitedProjectId) {
-        navigate(`/project/${lastVisitedProjectId}/issues`);
-      } else {
-        navigate('/dashboard');
-      }
+  return useMutation({
+    mutationFn: (loginRequest: LoginRequest) => authApi.login(loginRequest),
+    onSuccess(data) {
+      loginSuccess(data);
+      router.replace(
+        lastVisitedProjectId ? `/project/${lastVisitedProjectId}/issues` : '/dashboard',
+      );
     },
-    onError: () => {
-      logout();
-    }
+    onError: () => clearAuth(),
   });
 };

@@ -1,10 +1,8 @@
+'use client';
 import { LoginForm } from '@/components/LoginForm';
 
-export default LoginPage = () => {
-  console.log(
-    'process.env.NEXT_PUBLIC_API_MOCKING:',
-    process.env.NEXT_PUBLIC_ENABLE_API_MOCKING,
-  );
+const LoginPage = () => {
+  console.log('process.env.NEXT_PUBLIC_API_MOCKING:', process.env.NEXT_PUBLIC_ENABLE_API_MOCKING);
   return (
     <main className="flex flex-wrap min-h-screen">
       <div className="w-full lg:w-1/2 p-4 border-b md:border-b-0 md:border-r flex flex-col items-center mt-12 gap-8">
@@ -24,12 +22,10 @@ export default LoginPage = () => {
         </div>
       </div>
       <div className="lg:flex w-full lg:w-1/2 p-4 bg-gray-200 hidden">
-        <img
-          className="mx-auto h-100 xl:h-[700px] lg:h-[600px]"
-          src="./calender.png"
-          alt="logo"
-        />
+        <img className="mx-auto h-100 xl:h-[700px] lg:h-[600px]" src="./calender.png" alt="logo" />
       </div>
     </main>
   );
 };
+
+export default LoginPage;
