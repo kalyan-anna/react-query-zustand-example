@@ -1,4 +1,5 @@
 async function initMocks() {
+  console.log('Mocking APIs enabled');
   if (typeof window === 'undefined') {
     const { server } = await import('./node');
     server.listen({
@@ -9,7 +10,6 @@ async function initMocks() {
     worker.start({
       onUnhandledRequest: 'bypass',
       quiet: true,
-      waitUntilReady: true,
     });
   }
 }

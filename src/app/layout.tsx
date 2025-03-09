@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/utils/client.helper';
-import { ThemeProvider } from '@/components/design-system';
+import { ThemeProvider } from '@material-tailwind/react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -16,9 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-if (process.env.NEXT_PUBLIC_ENABLE_API_MOCKING === 'true') {
-  import('../../mocks').catch(err => console.error('MSW failed to start', err));
-}
+import('../../mocks').catch(err => console.error('MSW failed to start', err));
 
 export default function RootLayout({
   children,

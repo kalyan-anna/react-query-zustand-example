@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   Typography,
-} from '@/components/design-system';
+} from '@material-tailwind/react';
 
 import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../state/auth';
@@ -26,7 +26,7 @@ type FormValues = yup.InferType<typeof schema>;
 
 export const LoginForm = () => {
   const { mutate, isPending, error } = useLoginMutation();
-
+  console.log('error:', error);
   const {
     register,
     handleSubmit,

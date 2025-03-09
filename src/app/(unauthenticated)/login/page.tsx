@@ -2,7 +2,6 @@
 import { LoginForm } from '@/components/LoginForm';
 
 const LoginPage = () => {
-  console.log('process.env.NEXT_PUBLIC_API_MOCKING:', process.env.NEXT_PUBLIC_ENABLE_API_MOCKING);
   return (
     <main className="flex flex-wrap min-h-screen">
       <div className="w-full lg:w-1/2 p-4 border-b md:border-b-0 md:border-r flex flex-col items-center mt-12 gap-8">
@@ -18,7 +17,7 @@ const LoginPage = () => {
           <div>david.brown@example.com</div>
           <div>emily.white@example.com</div>
           <div>christopher.wilson@example.com</div>
-          <div className="mt-2">password: welcome</div>
+          <div className="mt-2">password: Summertime2025</div>
         </div>
       </div>
       <div className="lg:flex w-full lg:w-1/2 p-4 bg-gray-200 hidden">

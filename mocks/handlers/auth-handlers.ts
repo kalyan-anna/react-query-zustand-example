@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 import { db } from '../data/db';
 
 export const authHandlers = [
-  http.get('/login', async ({ request }) => {
+  http.post('/api/login', async ({ request }) => {
     const body = await request.json();
     console.log('body:', body);
     const user = db.user.findFirst({
@@ -18,9 +18,6 @@ export const authHandlers = [
         currentUserId: user.id,
       });
     }
-    return new HttpResponse(null, {
-      status: 400,
-      statusText: 'Invalid email or password',
-    });
+    return HttpResponse.json({ errorMessage: 'Invalid email or password' }, { status: 400 });
   }),
 ];
