@@ -1,10 +1,10 @@
-import { Typography } from "@material-tailwind/react";
-import { useProjectsQuery } from "../state/project";
-import { Divider } from "./design-system/Divider";
-import { ProjectItemCard } from "./ProjectItemCard";
-import { ProjectItemSkeleton } from "./ProjectItemSkeleton";
+import { Typography } from '@material-tailwind/react';
+import { useProjectsQuery } from '../state/project';
+import { Divider } from './design-system/Divider';
+import { ProjectItemCard } from './ProjectItemCard';
+import { ProjectItemSkeleton } from './ProjectItemSkeleton';
 
-const ProjectList = () => {
+export const ProjectList = () => {
   const { ownedProjects, otherProjects, loading, error } = useProjectsQuery();
 
   return (
@@ -25,7 +25,7 @@ const ProjectList = () => {
           </div>
         )}
         <div className="flex flex-wrap gap-4">
-          {ownedProjects.map((p) => (
+          {ownedProjects.map(p => (
             <ProjectItemCard name={p.name} subTitle={p.subTitle} key={p.id} id={p.id} />
           ))}
         </div>
@@ -47,7 +47,7 @@ const ProjectList = () => {
           </div>
         )}
         <div className="flex flex-wrap gap-4">
-          {otherProjects.map((p) => (
+          {otherProjects.map(p => (
             <ProjectItemCard name={p.name} subTitle={p.subTitle} key={p.id} id={p.id} />
           ))}
         </div>
@@ -56,5 +56,3 @@ const ProjectList = () => {
     </>
   );
 };
-
-export default ProjectList;

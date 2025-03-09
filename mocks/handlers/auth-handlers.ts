@@ -3,18 +3,19 @@ import { db } from '../data/db';
 
 export const authHandlers = [
   http.post('/api/login', async ({ request }) => {
-    const body = await request.json();
-    console.log('body:', body);
+    const body: any = await request.json();
+
     const user = db.user.findFirst({
       where: {
         email: {
-          equals: '1234',
+          equals: body.email,
         },
       },
     });
-    if (user) {
+
+    if (user && user.password === body.password) {
       return HttpResponse.json({
-        accessToken: '1234',
+        accessToken: '1234DummyToken',
         currentUserId: user.id,
       });
     }

@@ -31,5 +31,28 @@ declare module '@material-tailwind/react' {
   export interface CardBodyProps extends EventCapture {
     placeholder?: unknown;
   }
-  // more...
+  export interface Avatar extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface MenuList extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface MenuItem extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface Navbar extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface IconButton extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface List extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface ListItem extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface ListItemPrefix extends EventCapture {
+    placeholder?: unknown;
+  }
 }

@@ -38,7 +38,9 @@ const useAuthStoreBase = create<AuthStateAndAction>()(
           },
           clearAuth: () => {
             set(state => {
-              state = initState;
+              state.accessToken = undefined;
+              state.currentUserId = undefined;
+              state.isAuthenticated = false;
             });
           },
         },

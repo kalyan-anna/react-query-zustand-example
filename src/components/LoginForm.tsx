@@ -26,7 +26,8 @@ type FormValues = yup.InferType<typeof schema>;
 
 export const LoginForm = () => {
   const { mutate, isPending, error } = useLoginMutation();
-  console.log('error:', error);
+  const apiErrorData: any = error?.response?.data;
+
   const {
     register,
     handleSubmit,
@@ -55,7 +56,9 @@ export const LoginForm = () => {
           </Typography>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
-          {error?.message && <p className="text-sm text-red-500 mb-2">{error.message}</p>}
+          {apiErrorData?.errorMessage && (
+            <p className="text-sm text-red-500 mb-2">{apiErrorData?.errorMessage}</p>
+          )}
           <div>
             <Input
               type="email"
