@@ -1,3 +1,3 @@
 # react-query-zustand-example
 
-To be uploaded soon.
+Complete repo to be uploaded soon (power cut).
