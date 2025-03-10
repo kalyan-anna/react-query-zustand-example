@@ -1,11 +1,3 @@
-import create from 'zustand';
+import { atom } from 'jotai';
 
-interface NotificationPopoverState {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}
-
-export const useNotificationPopoverStore = create<NotificationPopoverState>(set => ({
-  isOpen: false,
-  setIsOpen: isOpen => set({ isOpen }),
-}));
+export const notificationPopoverAtom = atom(false);

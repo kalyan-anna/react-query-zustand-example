@@ -1,4 +1,4 @@
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 interface ToastState {
   message: string;
@@ -14,10 +14,10 @@ const addToastAtom = atom(null, (get, set, message: string) => {
 
 const removeToastAtom = atom(null, (get, set, id: string) => {
   const prevToasts = get(toastsAtom);
-  console.log("id to remove:", id);
+  console.log('id to remove:', id);
   set(
     toastsAtom,
-    prevToasts.filter((t) => t.id !== id)
+    prevToasts.filter(t => t.id !== id),
   );
 });
 

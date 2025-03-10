@@ -1,5 +1,5 @@
-import { Issue } from "@generated/graphql";
-import { atom, useAtom, useSetAtom } from "jotai";
+import { atom, useAtom, useSetAtom } from 'jotai';
+import { Issue } from '../issue/types';
 
 type DialogState<T> = {
   isOpen: boolean;
