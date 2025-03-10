@@ -1,30 +1,23 @@
-import { Notification, NotificationStatus, UpdateNotificationMutation } from '@generated/graphql';
-import { useCallback } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { notificationApi } from './api';
+import { notificationsKeys } from './queries';
+import { Notification } from './types';
 
-export const useReadNotificationMutation = (): [
-  (item: Notification) => void,
-  MutationResult<UpdateNotificationMutation>,
-] => {
-  const [readNotification, result] = useMutation(UPDATE_NOTIFICATION_MUTATION);
+export const useMarkAsReadMutation = () => {
+  const queryClient = useQueryClient();
 
-  const readNotificationCb = useCallback(
-    (item: Notification) => {
-      readNotification({
-        variables: {
-          id: item.id,
-          status: NotificationStatus.Read,
-        },
-        optimisticResponse: {
-          updateNotification: {
-            ...item,
-            __typename: 'Notification',
-            status: NotificationStatus.Read,
-          },
-        },
-      });
+  return useMutation({
+    mutationFn: (notificationId: string) => notificationApi.markAsRead(notificationId),
+    onMutate: async (notificationId: string) => {
+      const previousNotifications = queryClient.getQueryData<Notification[]>(notificationsKeys.all);
+      const updatedNotifications = previousNotifications?.map(notification =>
+        notification.id === notificationId ? { ...notification, status: 'read' } : notification,
+      );
+      queryClient.setQueryData(notificationsKeys.all, updatedNotifications);
+      return { previousNotifications };
     },
-    [readNotification],
-  );
-
-  return [readNotificationCb, result];
+    onError: (err, notificationId, context) => {
+      queryClient.setQueryData(notificationsKeys.all, context?.previousNotifications);
+    },
+  });
 };

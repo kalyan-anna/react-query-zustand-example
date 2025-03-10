@@ -6,4 +6,11 @@ const getNotifications = async (userId: string) => {
   return data;
 };
 
-export const notificationApi = { getNotifications };
+const markAsRead = async (notificationId: string) => {
+  const { data } = await axiosInstance.put<Notification>(
+    `/api/notifications/${notificationId}/read`,
+  );
+  return data;
+};
+
+export const notificationApi = { getNotifications, markAsRead };

@@ -21,28 +21,31 @@ type UIPreferenceStateAndAction = UIPreferenceState & {
 
 const useUIPreferenceStoreBase = create<UIPreferenceStateAndAction>()(
   persist(
-    immer(
-      devtools(
-        set => ({
-          ...initState,
-          actions: {
-            setLastVisitedProjectId: (projectId?: string) => {
-              set(state => {
-                state.lastVisitedProjectId = projectId;
-              });
-            },
+    devtools(
+      immer(set => ({
+        ...initState,
+        actions: {
+          setLastVisitedProjectId: (projectId?: string) => {
+            set(state => {
+              state.lastVisitedProjectId = projectId;
+            });
           },
-        }),
-        {
-          enabled: true,
-          name: 'ui-preference-store',
-          store: 'ui-preference-store',
         },
-      ),
+      })),
+      {
+        enabled: true,
+        name: 'ui-preference-store',
+        store: 'ui-preference-store',
+      },
     ),
     {
       name: 'ui-preference-store',
       storage: createJSONStorage(() => localStorage),
+      partialize: state => {
+        return {
+          lastVisitedProjectId: state.lastVisitedProjectId,
+        };
+      },
     },
   ),
 );

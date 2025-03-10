@@ -11,7 +11,7 @@ export const useNotificationsQuery = ({
   select,
 }: {
   select?: ((data: Notification[]) => Notification[]) | undefined;
-}) => {
+} = {}) => {
   const currentUserId = useAuthStore.use.currentUserId() ?? '';
   return useQuery({
     queryKey: notificationsKeys.all,

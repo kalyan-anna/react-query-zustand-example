@@ -7,7 +7,7 @@ const getIssues = async (projectId: string) => {
 };
 
 const getIssuesCount = async (projectId: string) => {
-  const { data } = await axiosInstance.get<number>(`/api/${projectId}/issues/count`);
+  const { data } = await axiosInstance.get<{ count: number }>(`/api/${projectId}/issues/count`);
   return data;
 };
 

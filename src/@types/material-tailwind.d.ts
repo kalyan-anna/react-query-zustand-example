@@ -55,4 +55,7 @@ declare module '@material-tailwind/react' {
   export interface ListItemPrefix extends EventCapture {
     placeholder?: unknown;
   }
+  export interface PopoverContent extends EventCapture {
+    placeholder?: unknown;
+  }
 }

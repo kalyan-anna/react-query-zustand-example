@@ -12,7 +12,7 @@ interface ProjectItemCardProps {
 
 export const ProjectItemCard = ({ name, subTitle, id }: ProjectItemCardProps) => {
   const router = useRouter();
-  const { data, refetch } = useIssuesCountByProjectId(id);
+  const { data, isLoading, refetch } = useIssuesCountByProjectId(id);
   const hasRefetchedRef = useRef(data ? false : true);
 
   useEffect(() => {
@@ -38,13 +38,13 @@ export const ProjectItemCard = ({ name, subTitle, id }: ProjectItemCardProps) =>
           <Typography variant="small" className="italic">
             Issue Count:
           </Typography>
-          {data && (
+          {!isLoading && data && (
             <Typography
               variant="small"
               color="blue-gray"
               className="font-normal bg-gray-500 w-6 text-center rounded-full"
             >
-              {data ?? 0}
+              {data.count ?? 0}
             </Typography>
           )}
         </div>
