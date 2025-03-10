@@ -1,4 +1,3 @@
-import { Notification, NotificationStatus } from "@generated/graphql";
 import {
   List,
   ListItem,
@@ -7,12 +6,11 @@ import {
   PopoverContent,
   PopoverHandler,
   Typography,
-} from "@material-tailwind/react";
-import { useAtom } from "jotai";
-import React from "react";
-import { useNotificationsQuery, useReadNotificationMutation } from "../state/notification";
-import { notificationPopoverAtom } from "../state/ui-popover";
-import cx from "classnames";
+} from '@material-tailwind/react';
+import React from 'react';
+import { useNotificationsQuery, useReadNotificationMutation } from '../state/notification';
+import { notificationPopoverAtom } from '../state/ui-popover';
+import cx from 'classnames';
 
 interface NotificationPopoverProps {
   children: React.ReactNode;
@@ -47,7 +45,7 @@ export const NotificationPopover = ({ children }: NotificationPopoverProps) => {
             </div>
           )}
           {!loading &&
-            data?.notifications.map((item) => (
+            data?.notifications.map(item => (
               <div key={item.id} className="border-b-2 border-gray-200 p-2">
                 <ListItem onClick={() => handleItemClick(item)}>
                   {item.status === NotificationStatus.Unread && (
@@ -57,7 +55,7 @@ export const NotificationPopover = ({ children }: NotificationPopoverProps) => {
                   )}
                   <div
                     className={cx({
-                      "text-gray-500": item.status === NotificationStatus.Read,
+                      'text-gray-500': item.status === NotificationStatus.Read,
                     })}
                   >
                     {item.message}

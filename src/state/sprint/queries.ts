@@ -1,74 +1,62 @@
-import { IssueStatus, SprintStatus } from '@generated/graphql';
+import { useCallback, useMemo } from 'react';
+import { Sprint } from './type';
+import { useQuery } from '@tanstack/react-query';
+import { sprintApi } from './api';
+import { Issue, IssueStatus } from '../issue/types';
 
-import { useQuery } from '@apollo/client';
-import { gql } from '@generated/gql';
-import { useMemo } from 'react';
+export const sprintKeys = {
+  all: ['sprints'] as const,
+  byProjectId: (projectId: string) => [...sprintKeys.all, { projectId }],
+};
 
-export const SPRINTS_QUERY = gql(`
-    query SPRINTS($projectId: String!) {
-        sprints(projectId: $projectId) {
-            ...SprintFragment
-            issues {
-                ...IssueFragment
-            }
-        }
-    }
-`);
-
-export const useSprintsQuery = ({ projectId }: { projectId: string }) => {
-  return useQuery(SPRINTS_QUERY, {
-    variables: {
-      projectId,
-    },
+export const useSprintsQuery = <T = Sprint[]>({
+  projectId,
+  select,
+}: {
+  projectId: string;
+  select?: (data: Sprint[]) => T;
+}) => {
+  return useQuery<T, Error>({
+    queryKey: sprintKeys.byProjectId(projectId),
+    queryFn: () => sprintApi.getSprints(projectId) as Promise<T>,
+    select: select as (data: T) => T,
   });
 };
 
 export const useUnCompletedSprintsQuery = ({ projectId }: { projectId: string }) => {
-  const result = useSprintsQuery({ projectId });
+  const uncompletedSprintSelect = useCallback(
+    (sprints: Sprint[]) =>
+      sprints
+        .filter(sprint => sprint.status !== 'COMPLETED')
+        .sort((a, b) => {
+          if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
+            return -1;
+          } else if (b.status === 'ACTIVE' && a.status !== 'ACTIVE') {
+            return 1;
+          }
+          return 0;
+        }),
+    [],
+  );
 
-  return useMemo(() => {
-    const uncompleted = result.data?.sprints
-      .filter(sprint => sprint.status !== SprintStatus.Completed)
-      .sort((a, b) => {
-        if (a.status === SprintStatus.Active && b.status !== SprintStatus.Active) {
-          return -1;
-        } else if (b.status === SprintStatus.Active && a.status !== SprintStatus.Active) {
-          return 1;
-        }
-        return 0;
-      });
-
-    return {
-      ...result,
-      data: uncompleted,
-    };
-  }, [result]);
+  return useSprintsQuery({ projectId, select: uncompletedSprintSelect });
 };
 
 export const useCompletedSprintsQuery = ({ projectId }: { projectId: string }) => {
-  const result = useSprintsQuery({ projectId });
+  const completedSprintSelect = useCallback(
+    (sprints: Sprint[]) => sprints.filter(sprint => sprint.status === 'COMPLETED'),
+    [],
+  );
 
-  return useMemo(() => {
-    const completed = result.data?.sprints.filter(sprint => sprint.status === SprintStatus.Completed);
-
-    return {
-      ...result,
-      data: completed,
-    };
-  }, [result]);
+  return useSprintsQuery({ projectId, select: completedSprintSelect });
 };
 
 export const useActiveSprintQuery = ({ projectId }: { projectId: string }) => {
-  const result = useSprintsQuery({ projectId });
-
-  return useMemo(() => {
-    const activeSprint = result.data?.sprints.find(sprint => sprint.status === SprintStatus.Active);
-
-    return {
-      ...result,
-      data: activeSprint,
-    };
-  }, [result]);
+  const activeSprintSelect = useCallback(
+    (sprints: Sprint[]) => sprints.find(sprint => sprint.status === 'ACTIVE'),
+    [],
+  );
+  return useSprintsQuery({ projectId, select: activeSprintSelect });
 };
 
 export const useActiveSprintIssuesByStatusQuery = ({
@@ -81,7 +69,7 @@ export const useActiveSprintIssuesByStatusQuery = ({
   const result = useActiveSprintQuery({ projectId });
 
   return useMemo(() => {
-    const issues = result.data?.issues?.filter(issue => issue.status === status);
+    const issues = result.data?.issues.filter(issue => issue.status === status);
 
     return {
       ...result,

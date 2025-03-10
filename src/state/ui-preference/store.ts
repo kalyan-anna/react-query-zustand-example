@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { createSelectors } from '@/utils/zustand.helper';
 
@@ -20,24 +20,30 @@ type UIPreferenceStateAndAction = UIPreferenceState & {
 };
 
 const useUIPreferenceStoreBase = create<UIPreferenceStateAndAction>()(
-  immer(
-    devtools(
-      set => ({
-        ...initState,
-        actions: {
-          setLastVisitedProjectId: (projectId?: string) => {
-            set(state => {
-              state.lastVisitedProjectId = projectId;
-            });
+  persist(
+    immer(
+      devtools(
+        set => ({
+          ...initState,
+          actions: {
+            setLastVisitedProjectId: (projectId?: string) => {
+              set(state => {
+                state.lastVisitedProjectId = projectId;
+              });
+            },
           },
+        }),
+        {
+          enabled: true,
+          name: 'ui-preference-store',
+          store: 'ui-preference-store',
         },
-      }),
-      {
-        enabled: true,
-        name: 'ui-preference-store',
-        store: 'ui-preference-store',
-      },
+      ),
     ),
+    {
+      name: 'ui-preference-store',
+      storage: createJSONStorage(() => localStorage),
+    },
   ),
 );
 

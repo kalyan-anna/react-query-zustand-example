@@ -1,4 +1,6 @@
 import { NotificationPopover } from '@/components/NotificationPopover';
+import { useUnreadNotificationsQuery } from '@/state/notification';
+import { useCurrentUserQuery } from '@/state/user';
 import { BellIcon, ChevronDownIcon, PowerIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import {
   Avatar,
@@ -93,8 +95,8 @@ interface MainNavProps {
 }
 
 export const MainNav = ({ withProfileMenu = true }: MainNavProps) => {
-  const { data, loading } = useCurrentUserQuery();
-  const { length } = useNotificationsCountQuery();
+  const { data, isLoading } = useCurrentUserQuery();
+  const { data: unreadData } = useUnreadNotificationsQuery();
 
   return (
     <Navbar className="min-w-full rounded-none h-28 flex items-center px-1 md:pl-4 md:pr-12">
@@ -106,7 +108,7 @@ export const MainNav = ({ withProfileMenu = true }: MainNavProps) => {
         </Link>
         {withProfileMenu && (
           <div className="flex gap-16 justify-center items-center">
-            <WithBadge count={length || 0}>
+            <WithBadge count={unreadData?.length || 0}>
               <NotificationPopover>
                 <IconButton variant="text">
                   <BellIcon color="black" className="h-10 w-10" />
@@ -114,9 +116,9 @@ export const MainNav = ({ withProfileMenu = true }: MainNavProps) => {
               </NotificationPopover>
             </WithBadge>
             <div className="flex gap-4 justify-center items-center">
-              {!loading && (
+              {!isLoading && (
                 <Typography color="blue-gray" variant="lead">
-                  {data?.user?.name}
+                  {data?.name}
                 </Typography>
               )}
               <ProfileMenu />

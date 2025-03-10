@@ -1,8 +1,8 @@
 import { Card, CardBody, Typography } from '@material-tailwind/react';
 
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
-import { useIssuesCountByProjectId } from '../state/issue';
+import { useRouter } from 'next/navigation';
+import { useIssuesCountByProjectId } from '@/state/issue';
 
 interface ProjectItemCardProps {
   id: string;
@@ -11,7 +11,7 @@ interface ProjectItemCardProps {
 }
 
 export const ProjectItemCard = ({ name, subTitle, id }: ProjectItemCardProps) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { data, refetch } = useIssuesCountByProjectId(id);
   const hasRefetchedRef = useRef(data ? false : true);
 
@@ -23,7 +23,7 @@ export const ProjectItemCard = ({ name, subTitle, id }: ProjectItemCardProps) =>
   }, [refetch]);
 
   const handleClick = () => {
-    navigate(`/project/${id}`);
+    router.push(`/project/${id}`);
   };
 
   return (

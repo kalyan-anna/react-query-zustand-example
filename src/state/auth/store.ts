@@ -5,9 +5,9 @@ import { LoginResponse } from './types';
 import { createSelectors } from '@/utils/zustand.helper';
 
 type AuthState = {
-  accessToken?: string;
+  accessToken: string | undefined;
   isAuthenticated: boolean;
-  currentUserId?: string;
+  currentUserId: string | undefined;
 };
 
 type AuthAction = {

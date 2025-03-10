@@ -1,56 +1,31 @@
-import { gql } from '@generated/gql';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { issuesAPi } from './api';
 
-export const BACKLOG_ISSUES_QUERY = gql(`
-    query BACKLOG_ISSUES($projectId: String!) {
-      issues(projectId: $projectId, sprintId: null) {
-          ...IssueFragment
-      }
-    }
-`);
-
-export const PROJECT_ISSUES_COUNT = gql(`
-  query PROJECT_ISSUES_COUNT {
-    projectIssuesCount {
-      projectId
-      issuesCount
-    }
-  }
-`);
-
-export const useBacklogIssuesQuery = (projectId: string) => {
-  const { data, ...result } = useQuery(BACKLOG_ISSUES_QUERY, {
-    variables: {
-      projectId,
-    },
-  });
-
-  const sortedIssues = useMemo(
-    () => [...(data?.issues ?? [])].sort((a, b) => a.orderIndex - b.orderIndex),
-    [data?.issues],
-  );
-
-  return {
-    ...result,
-    data: {
-      ...data,
-      issues: sortedIssues,
-    },
-  };
+export const issuesKeys = {
+  all: ['issues'] as const,
+  byProjectId: (projectId: string) => [...issuesKeys.all, { projectId }],
+  count: (projectId: string) => [...issuesKeys.all, 'count', { projectId }],
 };
 
-export const useProjectIssuesCount = () => {
-  return useQuery(PROJECT_ISSUES_COUNT);
+export const useBacklogIssuesQuery = (projectId: string) => {
+  const result = useQuery({
+    queryKey: issuesKeys.byProjectId(projectId),
+    queryFn: () => issuesAPi.getIssues(projectId),
+  });
+
+  return useMemo(() => {
+    const sortedIssues = [...(result.data ?? [])].sort((a, b) => a.orderIndex - b.orderIndex);
+    return {
+      ...result,
+      data: sortedIssues,
+    };
+  }, [result]);
 };
 
 export const useIssuesCountByProjectId = (projectId: string) => {
-  const { data, ...result } = useQuery(PROJECT_ISSUES_COUNT);
-  return useMemo(() => {
-    const filteredData = data?.projectIssuesCount.find(data => data.projectId === projectId);
-    return {
-      ...result,
-      data: filteredData?.issuesCount,
-    };
-  }, [data?.projectIssuesCount, projectId, result]);
+  return useQuery({
+    queryKey: issuesKeys.count(projectId),
+    queryFn: () => issuesAPi.getIssuesCount(projectId),
+  });
 };

@@ -1,38 +1,29 @@
-import { gql } from "@generated/gql";
-import { useQuery } from "@apollo/client";
-import { useAuthState } from "../auth";
-import { useMemo } from "react";
+import { useMemo } from 'react';
+import { useAuthStore } from '../auth';
+import { useQuery } from '@tanstack/react-query';
+import { userApi } from './api';
 
-const USERS_QUERY = gql(`
-    query USERS {
-        users {
-            ...UserFragment
-        }
-    }
-`);
-
-export const USER_QUERY = gql(`
-    query USER($id: String!) {
-        user(id: $id) {
-            ...UserFragment
-        }
-    }
-`);
+export const userKeys = {
+  all: ['users'] as const,
+  user: (id: string) => [...userKeys.all, { id }],
+};
 
 export const useUsersQuery = () => {
-  return useQuery(USERS_QUERY);
+  return useQuery({
+    queryKey: userKeys.all,
+    queryFn: () => userApi.getUsers(),
+  });
 };
 
 export const useCurrentUserQuery = () => {
-  const { currentUserId } = useAuthState();
-  const result = useQuery(USER_QUERY, {
-    variables: {
-      id: currentUserId ?? "",
-    },
+  const currentUserId = useAuthStore.use.currentUserId() ?? '';
+  const result = useQuery({
+    queryKey: userKeys.user(currentUserId),
+    queryFn: () => userApi.getUser(currentUserId),
   });
 
   return useMemo(() => {
-    const firstName = result.data?.user?.name.split(" ")[0];
+    const firstName = result.data?.name.split(' ')[0];
 
     return {
       ...result,

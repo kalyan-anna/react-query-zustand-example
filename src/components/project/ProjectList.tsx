@@ -1,11 +1,11 @@
 import { Typography } from '@material-tailwind/react';
-import { useProjectsQuery } from '../state/project';
-import { Divider } from './design-system/Divider';
+import { useProjectsQuery } from '../../state/project';
+import { Divider } from '../design-system/Divider';
 import { ProjectItemCard } from './ProjectItemCard';
 import { ProjectItemSkeleton } from './ProjectItemSkeleton';
 
 export const ProjectList = () => {
-  const { ownedProjects, otherProjects, loading, error } = useProjectsQuery();
+  const { ownedProjects, otherProjects, isLoading, error } = useProjectsQuery();
 
   return (
     <>
@@ -13,12 +13,12 @@ export const ProjectList = () => {
         <Typography variant="h2" color="blue-gray">
           Projects Owned by You
         </Typography>
-        {!loading && !error && ownedProjects.length === 0 && (
+        {!isLoading && !error && ownedProjects.length === 0 && (
           <Typography as="p" color="gray" variant="lead" className="mt-2">
             No projects found.
           </Typography>
         )}
-        {loading && !error && (
+        {isLoading && !error && (
           <div className="flex flex-wrap gap-4 animate-pulse">
             <ProjectItemSkeleton />
             <ProjectItemSkeleton />
@@ -35,12 +35,12 @@ export const ProjectList = () => {
         <Typography variant="h2" color="blue-gray">
           Projects You Are Associated With
         </Typography>
-        {!loading && otherProjects.length === 0 && (
+        {!isLoading && otherProjects.length === 0 && (
           <Typography as="p" color="gray" variant="lead" className="mt-2">
             No projects found.
           </Typography>
         )}
-        {loading && !error && (
+        {isLoading && !error && (
           <div className="flex flex-wrap gap-4 animate-pulse">
             <ProjectItemSkeleton />
             <ProjectItemSkeleton />

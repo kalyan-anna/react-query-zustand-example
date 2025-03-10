@@ -1,3 +1,5 @@
+'use client';
+
 import { ToastContainer } from '@/components/design-system/ToastContainer';
 import { useAuthStore } from '@/state/auth';
 import { useRouter } from 'next/navigation';

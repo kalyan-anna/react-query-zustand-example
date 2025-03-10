@@ -1,24 +1,24 @@
-import { useApolloClient, useFragment, useQuery } from '@apollo/client';
-import { gql } from '@generated/gql';
-import { useAuthState } from '../auth';
-import { ProjectFragment } from '../../fragments/project.fragment';
 import { useMemo } from 'react';
+import { useAuthStore } from '../auth';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { projectApi } from './api';
+import { Project } from './types';
 
-const PROJECTS_QUERY = gql(`
-    query PROJECTS {
-        projects {
-           ...ProjectFragment
-        }
-    }
-  `);
+export const projectKeys = {
+  all: ['projects'] as const,
+  project: (id: string) => [...projectKeys.all, { id }],
+};
 
 export const useProjectsQuery = () => {
-  const result = useQuery(PROJECTS_QUERY);
-  const { currentUserId } = useAuthState();
+  const { currentUserId } = useAuthStore();
+  const result = useQuery({
+    queryKey: projectKeys.all,
+    queryFn: () => projectApi.getProjects(),
+  });
 
   return useMemo(() => {
-    const ownedProjects = result?.data?.projects?.filter(project => project.ownerId === currentUserId) ?? [];
-    const otherProjects = result?.data?.projects?.filter(project => project.ownerId !== currentUserId) ?? [];
+    const ownedProjects = result?.data?.filter(project => project.ownerId === currentUserId) ?? [];
+    const otherProjects = result?.data?.filter(project => project.ownerId !== currentUserId) ?? [];
 
     return {
       ...result,
@@ -30,36 +30,14 @@ export const useProjectsQuery = () => {
 };
 
 export const useProjectQuery = (id: string) => {
-  const result = useProjectsQuery();
+  const queryClient = useQueryClient();
 
-  return useMemo(() => {
-    const matchingProj = result.data?.projects.find(p => p.id === id);
-
-    return {
-      ...result,
-      data: matchingProj,
-    };
-  }, [id, result]);
-};
-
-// Just an example.
-// this is useless - no network call
-export const useProjectFragment = (id: string) => {
-  return useFragment({
-    fragment: ProjectFragment,
-    fragmentName: 'ProjectFragment',
-    from: {
-      __typename: 'Project',
-      id,
+  return useQuery({
+    queryKey: projectKeys.project(id),
+    queryFn: () => projectApi.getProject(id),
+    initialData: () => {
+      const projects = queryClient.getQueryData(projectKeys.all) as Project[];
+      return projects?.find((p: { id: string }) => p.id === id);
     },
   });
-};
-
-// Just an example.
-// this is useless - no re-rendering
-export const useProjectByIdFromCache = (projectId: string) => {
-  const client = useApolloClient();
-  const cachedProjects = client.readQuery({ query: PROJECTS_QUERY });
-  const project = cachedProjects?.projects?.find(project => project.id === projectId);
-  return project;
 };
