@@ -1,4 +1,5 @@
 import { NotificationPopover } from '@/components/NotificationPopover';
+import { useLogoutMutation } from '@/state/auth';
 import { useUnreadNotificationsQuery } from '@/state/notification';
 import { useCurrentUserQuery } from '@/state/user';
 import { BellIcon, ChevronDownIcon, PowerIcon, UserCircleIcon } from '@heroicons/react/24/solid';
@@ -22,10 +23,11 @@ import React from 'react';
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const router = useRouter();
+  const logoutMutation = useLogoutMutation();
 
   const handleLogoutMenuClick = () => {
     setIsMenuOpen(false);
-    router.push('/login');
+    logoutMutation.mutate();
   };
 
   const handleProfileMenuClick = () => {

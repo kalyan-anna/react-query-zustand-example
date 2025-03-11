@@ -1,7 +1,9 @@
+import { useAuthStore } from '@/state/auth';
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
 const addAuthentication = async (axiosConfig: InternalAxiosRequestConfig) => {
-  axiosConfig.headers.Authorization = `Bearer TODO`;
+  const accessToken = useAuthStore.getState().accessToken;
+  axiosConfig.headers.Authorization = `Bearer ${accessToken}`;
   return axiosConfig;
 };
 

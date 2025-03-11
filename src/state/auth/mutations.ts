@@ -20,3 +20,16 @@ export const useLoginMutation = () => {
     onError: () => clearAuth(),
   });
 };
+
+export const useLogoutMutation = () => {
+  const router = useRouter();
+  const { clearAuth } = useAuthStore.use.actions();
+
+  return useMutation({
+    mutationFn: () => authApi.logout(),
+    onMutate: () => {
+      clearAuth();
+      router.push('/login');
+    },
+  });
+};

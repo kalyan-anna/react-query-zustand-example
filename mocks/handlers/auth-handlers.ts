@@ -21,4 +21,9 @@ export const authHandlers = [
     }
     return HttpResponse.json({ errorMessage: 'Invalid email or password' }, { status: 400 });
   }),
+
+  http.post('/api/logout', async () => {
+    // TODO
+    return HttpResponse.json();
+  }),
 ];
