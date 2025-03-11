@@ -7,7 +7,7 @@ const getNotifications = async (userId: string) => {
 };
 
 const markAsRead = async (notificationId: string) => {
-  const { data } = await axiosInstance.put<Notification>(
+  const { data } = await axiosInstance.patch<Notification>(
     `/api/notifications/${notificationId}/read`,
   );
   return data;

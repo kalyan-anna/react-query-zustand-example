@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 import { db } from '../data/db';
 
 export const projectHandlers = [
-  http.get('/api/project/:id', async ({ params }) => {
+  http.get('/api/projects/:id', async ({ params }) => {
     const project = db.project.findFirst({
       where: {
         id: {

@@ -1,37 +1,30 @@
-import { MutationFunctionOptions, MutationResult, useMutation } from '@apollo/client';
-import { gql } from '@generated/gql';
-import { UpdateUserMutation, UpdateUserMutationVariables, UserUpdateInput } from '@generated/graphql';
-import { useCallback } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { userApi } from './api';
+import { userKeys } from './queries';
 
-const UPDATE_USER_MUTATION = gql(`
-    mutation UpdateUser($input: UserUpdateInput!) {
-        updateUser(userUpdateInput: $input) {
-            ...UserFragment
-        }
-    }
-`);
+export const useUpdateUserMutation = ({
+  onSettled,
+  onSuccess,
+}: { onSettled?: () => void; onSuccess?: () => void } = {}) => {
+  const queryClient = useQueryClient();
 
-type MutationOptions = Omit<MutationFunctionOptions<UpdateUserMutation, UpdateUserMutationVariables>, 'variables'>;
-
-export const useUpdateUserMutation = (): [
-  (data: UserUpdateInput, options?: MutationOptions) => void,
-  MutationResult<UpdateUserMutation>
-] => {
-  const [updateUser, result] = useMutation(UPDATE_USER_MUTATION);
-
-  const updateUserFn = useCallback(
-    (data: UserUpdateInput, options?: MutationOptions) => {
-      updateUser({
-        variables: {
-          input: {
-            ...data
-          }
-        },
-        ...options
-      });
+  return useMutation({
+    mutationFn: (user: Partial<User>) => userApi.updateUser(user),
+    onMutate: async (user: Partial<User>) => {
+      const previousUser = user.id
+        ? queryClient.getQueryData<User>(userKeys.user(user.id))
+        : undefined;
+      if (user.id) {
+        queryClient.setQueryData(userKeys.user(user.id), user);
+      }
+      return { previousUser };
     },
-    [updateUser]
-  );
-
-  return [updateUserFn, result];
+    onError: (err, user, context) => {
+      if (user.id) {
+        queryClient.setQueryData(userKeys.user(user.id), context?.previousUser);
+      }
+    },
+    onSettled,
+    onSuccess,
+  });
 };

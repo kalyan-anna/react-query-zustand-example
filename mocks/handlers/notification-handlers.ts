@@ -14,7 +14,7 @@ export const notificationHandlers = [
     return HttpResponse.json(notifications);
   }),
 
-  http.put('/api/notifications/:notificationId/read', async ({ params }) => {
+  http.patch('/api/notifications/:notificationId/read', async ({ params }) => {
     const notification = db.notification.update({
       where: {
         id: {

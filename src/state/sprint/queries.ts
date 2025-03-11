@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from 'react';
-import { Sprint } from './type';
 import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
+import { IssueStatus } from '../issue/types';
 import { sprintApi } from './api';
-import { Issue, IssueStatus } from '../issue/types';
+import { Sprint } from './type';
 
 export const sprintKeys = {
   all: ['sprints'] as const,

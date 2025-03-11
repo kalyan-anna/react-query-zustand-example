@@ -2,7 +2,7 @@ import { axiosInstance } from '@/utils/axios.instance';
 import { Project } from './types';
 
 const getProject = async (id: string) => {
-  const { data } = await axiosInstance.get<Project>(`/api/project/${id}`);
+  const { data } = await axiosInstance.get<Project>(`/api/projects/${id}`);
   return data;
 };
 

@@ -16,3 +16,10 @@ const sprintSchema = z.object({
 
 export type SprintStatus = z.infer<typeof SprintStatusEnum>;
 export type Sprint = z.infer<typeof sprintSchema>;
+
+export interface CreateSprintRequest {
+  name: string;
+  goal: string;
+  startDate: Date;
+  endDate: Date;
+}
