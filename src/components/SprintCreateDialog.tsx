@@ -1,5 +1,5 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
   Dialog,
@@ -9,27 +9,28 @@ import {
   Input,
   Textarea,
   Typography,
-} from "@material-tailwind/react";
-import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
-import * as yup from "yup";
-import { useCreateSprintMutation } from "../state/sprint/mutations";
-import DatePicker from "./design-system/DatePicker";
-import { sprintDialog } from "../state/ui-dialog";
+} from '@material-tailwind/react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { useCreateSprintMutation } from '../state/sprint/mutations';
+import DatePicker from './design-system/DatePicker';
+import { sprintDialog } from '../state/ui-dialog';
+import { useProjectIdParam } from '@/hooks/useProjectIdParam';
 
 const schema = yup.object({
-  name: yup.string().required("Name is required"),
-  goal: yup.string().required("Goal is required"),
-  startDate: yup.date().required("Start date is required"),
-  endDate: yup.date().required("End date is required"),
+  name: yup.string().required('Name is required'),
+  goal: yup.string().required('Goal is required'),
+  startDate: yup.date().required('Start date is required'),
+  endDate: yup.date().required('End date is required'),
 });
 
 type FormValues = yup.InferType<typeof schema>;
 
 const CreateSprintForm = () => {
   const { closeDialog } = sprintDialog.useDialogState();
-  const { projectId = "" } = useParams();
-  const [createSprint, { loading }] = useCreateSprintMutation();
+  const projectId = useProjectIdParam();
+  // const [createSprint, { loading }] = useCreateSprintMutation();
+  const loading = false;
 
   const {
     register,
@@ -41,14 +42,14 @@ const CreateSprintForm = () => {
     resolver: yupResolver(schema),
     disabled: loading,
   });
-  const selectedStartDate = watch("startDate");
-  const selectedEndDate = watch("endDate");
+  const selectedStartDate = watch('startDate');
+  const selectedEndDate = watch('endDate');
 
   const onSubmit = (data: FormValues) => {
-    createSprint({
-      ...data,
-      projectId,
-    });
+    // createSprint({
+    //   ...data,
+    //   projectId,
+    // });
   };
 
   return (
@@ -72,8 +73,8 @@ const CreateSprintForm = () => {
           <Input
             label="Summary"
             error={!!errors.name}
-            {...register("name")}
-            containerProps={{ className: "min-w-full" }}
+            {...register('name')}
+            containerProps={{ className: 'min-w-full' }}
           />
           {errors?.name && <p className="text-sm text-red-500 mt-2">{errors.name?.message}</p>}
         </div>
@@ -83,8 +84,8 @@ const CreateSprintForm = () => {
             rows={7}
             label="Goals"
             error={!!errors.goal}
-            {...register("goal")}
-            containerProps={{ className: "min-w-full" }}
+            {...register('goal')}
+            containerProps={{ className: 'min-w-full' }}
           />
           {errors?.goal && <p className="text-sm text-red-500 mt-2">{errors.goal?.message}</p>}
         </div>
@@ -93,22 +94,26 @@ const CreateSprintForm = () => {
           <DatePicker
             label="Start date"
             value={selectedStartDate}
-            onChange={(value) => setValue("startDate", value ?? new Date())}
+            onChange={value => setValue('startDate', value ?? new Date())}
             error={!!errors.startDate}
             disabled={loading}
           />
-          {errors?.startDate && <p className="text-sm text-red-500 mt-2">{errors.startDate?.message}</p>}
+          {errors?.startDate && (
+            <p className="text-sm text-red-500 mt-2">{errors.startDate?.message}</p>
+          )}
         </div>
 
         <div>
           <DatePicker
             label="End date"
             value={selectedEndDate}
-            onChange={(value) => setValue("endDate", value ?? new Date())}
+            onChange={value => setValue('endDate', value ?? new Date())}
             error={!!errors.endDate}
             disabled={loading}
           />
-          {errors?.endDate && <p className="text-sm text-red-500 mt-2">{errors.endDate?.message}</p>}
+          {errors?.endDate && (
+            <p className="text-sm text-red-500 mt-2">{errors.endDate?.message}</p>
+          )}
         </div>
 
         <div className="flex gap-4 justify-end">
@@ -128,7 +133,13 @@ export const SprintCreateDialog = () => {
   const { isOpen, closeDialog } = sprintDialog.useDialogState();
 
   return (
-    <Dialog size="sm" open={isOpen} handler={closeDialog} className="p-4" dismiss={{ outsidePress: false }}>
+    <Dialog
+      size="sm"
+      open={isOpen}
+      handler={closeDialog}
+      className="p-4"
+      dismiss={{ outsidePress: false }}
+    >
       <CreateSprintForm />
     </Dialog>
   );

@@ -3,7 +3,6 @@ import { db } from '../data/db';
 
 export const userHandlers = [
   http.get('/api/users/:id', async ({ params }) => {
-    console.log('im here...2');
     const user = db.user.findFirst({
       where: {
         id: {
@@ -19,7 +18,6 @@ export const userHandlers = [
   }),
 
   http.get('/api/users', async () => {
-    console.log('im here...3');
     const users = db.user.getAll();
     return HttpResponse.json(users);
   }),

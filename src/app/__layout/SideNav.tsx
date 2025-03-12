@@ -1,19 +1,22 @@
 import { Card, List, ListItem, ListItemPrefix } from '@material-tailwind/react';
 import { PresentationChartBarIcon, QueueListIcon } from '@heroicons/react/24/solid';
+import { usePathname, useRouter } from 'next/navigation';
+import { useProjectIdParam } from '@/hooks/useProjectIdParam';
+import { useActiveSprintQuery } from '@/state/sprint';
 
 export function SideNav() {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
   const pathNode = pathname.split('/').pop();
-  const { projectId } = useParams();
+  const projectId = useProjectIdParam();
   const { data } = useActiveSprintQuery({ projectId: projectId ?? '' });
 
   const handleActive = () => {
-    navigate('./active');
+    router.push('./active');
   };
 
   const handleIssuesClick = () => {
-    navigate('./issues');
+    router.push('./issues');
   };
 
   return (

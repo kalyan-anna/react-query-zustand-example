@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-const IssueStatusEnum = z.enum(['TO_DO', 'IN_PROGRESS', 'DONE', 'REVIEW']);
-const IssueTypeEnum = z.enum(['BUG', 'STORY']);
+export const IssueStatusEnum = z.enum(['TO_DO', 'IN_PROGRESS', 'DONE', 'REVIEW']);
+export const IssueTypeEnum = z.enum(['BUG', 'STORY']);
 
 export const issueSchema = z.object({
   id: z.string(),

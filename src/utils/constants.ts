@@ -1,6 +1,6 @@
-import { IssueType } from "@generated/graphql";
+import { IssueTypeEnum } from '@/state/issue/types';
 
 export const ISSUE_TYPE_COLOR = {
-  [IssueType.Story]: "bg-gray-500",
-  [IssueType.Bug]: "bg-red-500",
+  [IssueTypeEnum.Values.STORY]: 'bg-gray-500',
+  [IssueTypeEnum.Values.BUG]: 'bg-red-500',
 };

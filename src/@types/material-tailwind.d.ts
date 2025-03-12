@@ -58,4 +58,23 @@ declare module '@material-tailwind/react' {
   export interface PopoverContent extends EventCapture {
     placeholder?: unknown;
   }
+  export interface Spinner extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface Breadcrumbs extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface DialogHeader extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface DialogBody extends EventCapture {
+    placeholder?: unknown;
+  }
+  export interface Textarea extends EventCapture {
+    placeholder?: unknown;
+  }
+
+  export interface Dialog extends EventCapture {
+    placeholder?: unknown;
+  }
 }
